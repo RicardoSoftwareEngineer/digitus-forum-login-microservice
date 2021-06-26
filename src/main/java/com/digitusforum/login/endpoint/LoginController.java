@@ -5,16 +5,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import vo.TokenVO;
 import vo.UserVO;
 
 
 @RestController
 public class LoginController {
 	
-	@PostMapping(value = "/login/v1/login/by/emailAndPassword")
+	@PostMapping(value = "/login/v1/loginByEmailAndPassword")
     public Object loginByEmailAndPassword(@RequestHeader(defaultValue = "en_us") String locale, @RequestBody UserVO userVO) {
-		
-		return "";
+		UserVO user = new UserVO();
+		user.setName("sup bro aihusiuahsui");
+		return user;
 	}
 
 }
