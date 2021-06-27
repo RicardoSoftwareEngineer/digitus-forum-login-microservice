@@ -15,6 +15,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import model.M;
 import service.EnvironmentService;
 import service.ThrowService;
@@ -40,11 +41,11 @@ public class TokenService {
 				.signWith(signatureAlgorithm, signingKey).compact();
 	}
 
-	public UserVO validateToken(String locale, TokenVO tokenVO) {
+	public UserVO validateToken(String locale, UserVO userVO) {
 		String token = null;
 		Jws<Claims> jwtToken = null;
 		try {
-			String[] tokenData = tokenVO.getToken().split(" ");
+			String[] tokenData = userVO.getToken().split(" ");
 			String tokenType = tokenData[0];
 			token = tokenData[1];
 			if (StringUtils.isBlank(token)) {
@@ -53,17 +54,18 @@ public class TokenService {
 			jwtToken = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(EnvironmentService.JWT_KEY))
 					.parseClaimsJws(token);
 		} catch (MalformedJwtException e) {
-			throw ThrowService.doIt(locale, 403, M.LOGIN_INVALID_TOKEN);
+			throw ThrowService.doIt(locale, 400, M.LOGIN_INVALID_TOKEN);
 		} catch (ExpiredJwtException e) {
 			throw ThrowService.doIt(locale, 403, M.LOGIN_EXPIRED_TOKEN);
+		} catch (SignatureException e) {
+			throw ThrowService.doIt(locale, 400, M.LOGIN_INVALID_TOKEN);
 		} catch (Exception e) {
 			throw ThrowService.doIt(locale, 500, e.getMessage());
 		}
 
-		UserVO user = new UserVO();
-		user.setUserId(Integer.valueOf(jwtToken.getBody().getSubject()));
-		user.setName(jwtToken.getBody().get("name").toString());
-		user.setEmail(jwtToken.getBody().get("email").toString());
-		return user;
+		userVO.setUserId(Integer.valueOf(jwtToken.getBody().getSubject()));
+		userVO.setName(jwtToken.getBody().get("name").toString());
+		userVO.setEmail(jwtToken.getBody().get("email").toString());
+		return userVO;
 	}
 }

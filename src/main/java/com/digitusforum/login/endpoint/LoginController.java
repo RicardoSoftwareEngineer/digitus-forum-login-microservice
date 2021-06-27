@@ -26,16 +26,15 @@ public class LoginController {
 			@RequestBody UserVO userVO) {
 		userVO = userMicroservice.checkEmailAndPassword(userVO, locale);
 		String token = tokenService.createJWTToken(ZonedDateTime.now().plus(expireIn, ChronoUnit.MINUTES), userVO);
-		TokenVO tokenVO = new TokenVO();
-		tokenVO.setToken(token);
-		tokenVO.setName(userVO.getName());
-		return tokenVO;
+		userVO.setToken("bearer " + token);
+		userVO.setPassword("");
+		return userVO;
 	}
 	
 	@RequestMapping(value = "/login/v1/validateToken")
-	public Object loginByEmailAndPassword(@RequestHeader(defaultValue = "en_us") String locale,
-			@RequestBody TokenVO tokenVO) {
-		UserVO userVO = tokenService.validateToken(locale, tokenVO);
+	public Object validateToken(@RequestHeader(defaultValue = "en_us") String locale,
+			@RequestBody UserVO userVO) {
+		userVO = tokenService.validateToken(locale, userVO);
 
 		return userVO;
 	}
