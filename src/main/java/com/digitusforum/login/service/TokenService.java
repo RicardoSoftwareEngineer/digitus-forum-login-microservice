@@ -1,5 +1,14 @@
 package com.digitusforum.login.service;
 
+import java.security.Key;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.lang3.StringUtils;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -9,18 +18,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import model.M;
 import service.EnvironmentService;
 import service.ThrowService;
-
-import org.apache.commons.lang3.StringUtils;
-
 import vo.TokenVO;
 import vo.UserVO;
-
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Optional;
 
 public class TokenService {
 
