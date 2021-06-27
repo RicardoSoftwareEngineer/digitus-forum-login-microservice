@@ -32,7 +32,7 @@ public class TokenService {
         //Let's set the JWT Claims
         //Builds the JWT and serializes it to a compact, URL-safe string
         return Jwts.builder()
-                .setSubject(userVO.getUserId())
+                .setSubject(String.valueOf(userVO.getUserId()))
                 .setIssuer("digitusForum")
                 .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
                 .setExpiration(Date.from(expiration.toInstant()))
@@ -66,7 +66,7 @@ public class TokenService {
             throw ThrowService.doIt(locale, 403, M.LOGIN_EXPIRED_TOKEN);
         }
         UserVO user = new UserVO();
-        user.setUserId(jwtToken.getBody().getSubject());
+        user.setUserId(Integer.valueOf(jwtToken.getBody().getSubject()));
         if (jwtToken.getBody().get("email") != null)
             user.setEmail(jwtToken.getBody().get("email").toString());
         return user;
