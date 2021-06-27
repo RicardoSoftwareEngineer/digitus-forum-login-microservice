@@ -8,6 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -46,11 +47,10 @@ public class TokenService {
 		Jws<Claims> jwtToken = null;
 		try {
 			String[] tokenData = userVO.getToken().split(" ");
+			if(tokenData.length != 2)
+				throw ThrowService.doIt(locale, 400, M.LOGIN_INVALID_TOKEN);
 			String tokenType = tokenData[0];
 			token = tokenData[1];
-			if (StringUtils.isBlank(token)) {
-				throw ThrowService.doIt(locale, 403, M.LOGIN_INVALID_TOKEN);
-			}
 			jwtToken = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(EnvironmentService.JWT_KEY))
 					.parseClaimsJws(token);
 		} catch (MalformedJwtException e) {
@@ -58,6 +58,8 @@ public class TokenService {
 		} catch (ExpiredJwtException e) {
 			throw ThrowService.doIt(locale, 403, M.LOGIN_EXPIRED_TOKEN);
 		} catch (SignatureException e) {
+			throw ThrowService.doIt(locale, 400, M.LOGIN_INVALID_TOKEN);
+		} catch (ResponseStatusException e) {
 			throw ThrowService.doIt(locale, 400, M.LOGIN_INVALID_TOKEN);
 		} catch (Exception e) {
 			throw ThrowService.doIt(locale, 500, e.getMessage());
