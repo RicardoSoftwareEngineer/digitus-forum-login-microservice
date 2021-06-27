@@ -11,20 +11,33 @@ import org.springframework.web.bind.annotation.RestController;
 import com.digitusforum.login.service.TokenService;
 
 import microservice.UserMicroservice;
+import service.EnvironmentService;
 import vo.TokenVO;
 import vo.UserVO;
 
 @RestController
 public class LoginController {
 	UserMicroservice userMicroservice = new UserMicroservice();
+	TokenService tokenService = new TokenService();
+	int expireIn = Integer.valueOf(EnvironmentService.TOKEN_EXPIRATION_IN_MINUTES);
 
 	@RequestMapping(value = "/login/v1/loginByEmailAndPassword")
 	public Object loginByEmailAndPassword(@RequestHeader(defaultValue = "en_us") String locale,
 			@RequestBody UserVO userVO) {
 		userVO = userMicroservice.checkEmailAndPassword(userVO, locale);
-		String token = TokenService.createJWTToken(ZonedDateTime.now().plus(1, ChronoUnit.MINUTES), userVO);
+		String token = tokenService.createJWTToken(ZonedDateTime.now().plus(expireIn, ChronoUnit.MINUTES), userVO);
+		TokenVO tokenVO = new TokenVO();
+		tokenVO.setToken(token);
+		tokenVO.setName(userVO.getName());
+		return tokenVO;
+	}
+	
+	@RequestMapping(value = "/login/v1/validateToken")
+	public Object loginByEmailAndPassword(@RequestHeader(defaultValue = "en_us") String locale,
+			@RequestBody TokenVO tokenVO) {
+		UserVO userVO = tokenService.validateToken(locale, tokenVO);
 
-		return new TokenVO();
+		return userVO;
 	}
 
 }
