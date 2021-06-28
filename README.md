@@ -15,6 +15,10 @@ Login is the microservice responsible for create and validate JWT tokens
 
 Import on your preferred IDE as a maven project and run it like any other spring boot project
 
+## Postman reqs
+
+To make your life easier I put all requests available for download directly in your postman [here](https://www.getpostman.com/collections/3f7d6ea128d4b85c9943)
+
 ## Dependency
 
  - [Alexandria](https://github.com/RicardoCampinas/digitus-forum-alexandria)
