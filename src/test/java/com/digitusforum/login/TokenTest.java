@@ -10,11 +10,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.digitusforum.login.service.TokenService;
 
 import microservice.UserMicroservice;
+import model.Headers;
+import model.MicroservicesURLs;
+import model.Timeouts;
 import service.EnvironmentService;
 import service.RequestService;
 import vo.UserVO;
@@ -26,12 +31,15 @@ public class TokenTest {
 
 	@BeforeAll
 	public static void setupMock() {
+		UserVO user = new UserVO(2, "ricardo", "ricardo@gmail.com", "password");
+		ResponseEntity<UserVO> response = new ResponseEntity<UserVO>(user, HttpStatus.ACCEPTED);
+
 		RequestService requestService = mock(RequestService.class);
 		when(requestService.isUp(Mockito.anyString())).thenReturn(true);
-
-		userMicroservice = mock(UserMicroservice.class);
-		when(userMicroservice.checkEmailAndPassword(Mockito.any(UserVO.class), Mockito.anyString()))
-				.thenReturn(new UserVO(2, "ricardo", "ricardo@gmail.com", "password"));
+		when(requestService.hitIt(Mockito.eq(MicroservicesURLs.USER_RETRIEVE_BY_EMAIL_AND_PASSWORD),
+				Mockito.eq(Timeouts.ideal), Mockito.any(UserVO.class), Mockito.eq(Headers.DEFAULT("en_us"))))
+						.thenReturn(response);
+		userMicroservice = new UserMicroservice(requestService);
 	}
 
 	@Test
