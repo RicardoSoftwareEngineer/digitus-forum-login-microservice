@@ -1,4 +1,4 @@
-package com.digitusforum.login.token;
+package com.digitusforum.login;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +21,7 @@ import microservice.UserMicroservice;
 import vo.UserVO;
 
 @SpringBootTest
-public class LoginControllerTest {
+public class TokenTest {
 	private TokenService tokenService = new TokenService();
 	private static UserMicroservice userMicroservice;
 
