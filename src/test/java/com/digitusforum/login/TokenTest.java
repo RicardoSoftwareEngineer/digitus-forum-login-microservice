@@ -18,11 +18,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.digitusforum.login.service.TokenService;
 
 import microservice.UserMicroservice;
+import service.EnvironmentService;
 import vo.UserVO;
 
 @SpringBootTest
 public class TokenTest {
-	private TokenService tokenService = new TokenService();
+	private TokenService tokenService = new TokenService(EnvironmentService.TOKEN_EXPIRATION_IN_MINUTES);
 	private static UserMicroservice userMicroservice;
 
 	@BeforeAll
@@ -41,8 +42,7 @@ public class TokenTest {
 	void testTokenCreationAndValidation() {
 		UserVO userTryingToLogin = new UserVO("ricardo@gmail.com", "password");
 		userTryingToLogin = userMicroservice.checkEmailAndPassword(userTryingToLogin, "en_us");
-		userTryingToLogin = tokenService.createJWTToken(ZonedDateTime.now().plus(30, ChronoUnit.MINUTES),
-				userTryingToLogin);
+		userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
 		assertThat(userTryingToLogin.getToken()).isNotNull();
 		userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
 		assertThat(userTryingToLogin.getName()).isEqualTo("ricardo");
@@ -51,9 +51,10 @@ public class TokenTest {
 	@Test()
 	void testExpiredToken() {
 		ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+			TokenService tokenService = new TokenService(0);
 			UserVO userTryingToLogin = new UserVO("ricardo@gmail.com", "password");
 			userTryingToLogin = userMicroservice.checkEmailAndPassword(userTryingToLogin, "en_us");
-			userTryingToLogin = tokenService.createJWTToken(ZonedDateTime.now(), userTryingToLogin);
+			userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
 			userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
 		});
 		assertEquals(thrown.getRawStatusCode(), 403);

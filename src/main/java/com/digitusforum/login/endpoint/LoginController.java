@@ -1,9 +1,5 @@
 package com.digitusforum.login.endpoint;
 
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,12 +10,11 @@ import com.digitusforum.login.service.TokenService;
 import microservice.UserMicroservice;
 import service.EnvironmentService;
 import service.RequestService;
-import vo.TokenVO;
 import vo.UserVO;
 
 @RestController
 public class LoginController {
-	UserMicroservice userMicroservice = new UserMicroservice();
+	UserMicroservice userMicroservice = new UserMicroservice(new RequestService());
 	TokenService tokenService = new TokenService(EnvironmentService.TOKEN_EXPIRATION_IN_MINUTES);
 
 	@RequestMapping(value = "/login/v1/loginByEmailAndPassword")
