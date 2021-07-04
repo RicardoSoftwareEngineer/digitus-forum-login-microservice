@@ -2,6 +2,7 @@ package com.digitusforum.login.service;
 
 import java.security.Key;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -24,8 +25,13 @@ import vo.TokenVO;
 import vo.UserVO;
 
 public class TokenService {
+	private ZonedDateTime expiration;
 
-	public UserVO createJWTToken(ZonedDateTime expiration, UserVO userVO) {
+	public TokenService(int expirationInMinutes) {
+		this.expiration = ZonedDateTime.now().plus(expirationInMinutes, ChronoUnit.MINUTES);
+	}
+
+	public UserVO createJWTToken(UserVO userVO) {
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -50,7 +56,7 @@ public class TokenService {
 		Jws<Claims> jwtToken = null;
 		try {
 			String[] tokenData = userVO.getToken().split(" ");
-			if(tokenData.length != 2)
+			if (tokenData.length != 2)
 				throw ThrowService.doIt(locale, 400, M.LOGIN_INVALID_TOKEN);
 			String tokenType = tokenData[0];
 			token = tokenData[1];
