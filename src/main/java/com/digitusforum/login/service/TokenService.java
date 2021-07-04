@@ -25,7 +25,7 @@ import vo.UserVO;
 
 public class TokenService {
 
-	public String createJWTToken(ZonedDateTime expiration, UserVO userVO) {
+	public UserVO createJWTToken(ZonedDateTime expiration, UserVO userVO) {
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -35,11 +35,14 @@ public class TokenService {
 
 		// Let's set the JWT Claims
 		// Builds the JWT and serializes it to a compact, URL-safe string
-		return Jwts.builder().setSubject(String.valueOf(userVO.getUserId()))
+		String token = Jwts.builder().setSubject(String.valueOf(userVO.getUserId()))
 				.setIssuer("digitus forum login microservice").setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
 				.setExpiration(Date.from(expiration.toInstant())).claim("provider", "provider")
 				.claim("email", userVO.getEmail()).claim("name", userVO.getName())
 				.signWith(signatureAlgorithm, signingKey).compact();
+		userVO.setToken("bearer " + token);
+		userVO.setPassword("");
+		return userVO;
 	}
 
 	public UserVO validateToken(String locale, UserVO userVO) {
