@@ -46,7 +46,7 @@ public class TokenTest {
 		userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
 		assertThat(userTryingToLogin.getToken()).isNotNull();
 		userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
-		assertThat(userTryingToLogin.getName()).isEqualTo("ricardo");
+		assertThat(userTryingToLogin.getUserId()).isEqualTo(2);
 	}
 
 	@Test()

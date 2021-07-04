@@ -75,7 +75,6 @@ public class TokenService {
 		}
 
 		userVO.setUserId(Integer.valueOf(jwtToken.getBody().getSubject()));
-		userVO.setName(jwtToken.getBody().get("name").toString());
 		userVO.setEmail(jwtToken.getBody().get("email").toString());
 		return userVO;
 	}
