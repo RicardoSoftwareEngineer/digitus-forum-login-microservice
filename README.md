@@ -13,6 +13,10 @@ Login is the microservice responsible for create and validate JWT tokens
 - mockito 3.9
 - sprint tool suite 4
 
+## Tests
+
+- mocked test with dependency injection
+
 ## Installation
 
 Import on your preferred IDE as a maven project and run it like any other spring boot project
