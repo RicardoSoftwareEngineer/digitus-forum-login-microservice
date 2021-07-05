@@ -7,9 +7,15 @@ Login is the microservice responsible for create and validate JWT tokens
 ## Made with
 
 - java 11
-- spring boot 2.5
 - maven
+- spring boot 2.5
+- junit 5
+- mockito 3.9
 - sprint tool suite 4
+
+## Tests
+
+- mocked test with dependency injection
 
 ## Installation
 
