@@ -1,4 +1,4 @@
-package com.digitusforum.login.endpoint;
+package com.digitusforum.login.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
