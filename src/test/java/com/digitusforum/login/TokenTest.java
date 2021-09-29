@@ -14,15 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.digitusforum.login.service.TokenService;
-
-import microservice.UserMicroservice;
-import model.Headers;
-import model.MicroservicesURLs;
-import model.Timeouts;
-import service.EnvironmentService;
-import service.RequestService;
-import vo.UserVO;
+import request.Headers;
+import request.MicroservicesURLs;
+import request.RequestService;
+import request.Timeouts;
+import user.UserMicroservice;
+import user.UserVO;
+import util.EnvironmentService;
 
 @SpringBootTest
 public class TokenTest {

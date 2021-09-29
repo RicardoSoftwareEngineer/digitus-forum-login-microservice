@@ -1,4 +1,4 @@
-package com.digitusforum.login.endpoint;
+package com.digitusforum.login.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

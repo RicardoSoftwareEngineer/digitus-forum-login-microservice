@@ -1,4 +1,4 @@
-package com.digitusforum.login.service;
+package com.digitusforum.login;
 
 import java.security.Key;
 import java.time.ZonedDateTime;
@@ -11,6 +11,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import i18.M;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -18,11 +19,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import model.M;
-import service.EnvironmentService;
-import service.ThrowService;
-import vo.TokenVO;
-import vo.UserVO;
+import login.TokenVO;
+import user.UserVO;
+import util.EnvironmentService;
+import util.ThrowService;
 
 public class TokenService {
 	private ZonedDateTime expiration;

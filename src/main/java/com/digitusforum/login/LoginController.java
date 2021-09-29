@@ -1,16 +1,14 @@
-package com.digitusforum.login.endpoint;
+package com.digitusforum.login;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.digitusforum.login.service.TokenService;
-
-import microservice.UserMicroservice;
-import service.EnvironmentService;
-import service.RequestService;
-import vo.UserVO;
+import request.RequestService;
+import user.UserMicroservice;
+import user.UserVO;
+import util.EnvironmentService;
 
 @RestController
 public class LoginController {
