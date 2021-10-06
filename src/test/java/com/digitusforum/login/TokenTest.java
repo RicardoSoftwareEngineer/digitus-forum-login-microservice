@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import request.Headers;
 import request.MicroservicesURLs;
-import request.RequestService;
+import request.RequestServiceDEPRECATED;
 import request.Timeouts;
 import user.UserMicroservice;
 import user.UserVO;
@@ -24,7 +24,7 @@ import util.EnvironmentService;
 
 @SpringBootTest
 public class TokenTest {
-	private TokenService tokenService = new TokenService(EnvironmentService.TOKEN_EXPIRATION_IN_MINUTES);
+	private TokenService tokenService = new TokenService(EnvironmentService.TOKEN_EXPIRATION_IN_SECONDS);
 	private static UserMicroservice userMicroservice;
 
 	@BeforeAll
@@ -32,7 +32,7 @@ public class TokenTest {
 		UserVO user = new UserVO(2, "ricardo", "ricardo@gmail.com", "password");
 		ResponseEntity<UserVO> response = new ResponseEntity<UserVO>(user, HttpStatus.ACCEPTED);
 
-		RequestService requestService = mock(RequestService.class);
+		RequestServiceDEPRECATED requestService = mock(RequestServiceDEPRECATED.class);
 		when(requestService.isUp(Mockito.anyString())).thenReturn(true);
 		when(requestService.hitIt(Mockito.eq(MicroservicesURLs.USER_RETRIEVE_BY_EMAIL_AND_PASSWORD),
 				Mockito.eq(Timeouts.ideal), Mockito.any(UserVO.class), Mockito.eq(Headers.DEFAULT("en_us"))))
@@ -49,9 +49,9 @@ public class TokenTest {
 	void testTokenCreationAndValidation() {
 		UserVO userTryingToLogin = new UserVO("ricardo@gmail.com", "password");
 		userTryingToLogin = userMicroservice.checkEmailAndPassword(userTryingToLogin, "en_us");
-		userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
+		// userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
 		assertThat(userTryingToLogin.getToken()).isNotNull();
-		userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
+		// userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
 		assertThat(userTryingToLogin.getUserId()).isEqualTo(2);
 	}
 
@@ -61,8 +61,8 @@ public class TokenTest {
 			TokenService tokenService = new TokenService(0);
 			UserVO userTryingToLogin = new UserVO("ricardo@gmail.com", "password");
 			userTryingToLogin = userMicroservice.checkEmailAndPassword(userTryingToLogin, "en_us");
-			userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
-			userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
+			// userTryingToLogin = tokenService.createJWTToken(userTryingToLogin);
+			// userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
 		});
 		assertEquals(thrown.getRawStatusCode(), 403);
 	}
@@ -72,7 +72,7 @@ public class TokenTest {
 		ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
 			UserVO userTryingToLogin = new UserVO("ricardo@gmail.com", "password");
 			userTryingToLogin.setToken("aaaaaaaaaaaaaaaaa");
-			userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
+			// userTryingToLogin = tokenService.validateToken("en_us", userTryingToLogin);
 		});
 		assertEquals(thrown.getRawStatusCode(), 400);
 	}
