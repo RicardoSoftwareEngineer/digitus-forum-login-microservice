@@ -28,18 +28,17 @@ import util.EnvironmentService;
 public class TokenService {
 	private int expirationInSeconds;
 	private Map<String, TokenVO> uuidTokens = new HashMap<>();
+	private Map<String, TokenVO> validTokens = new HashMap<>();
 
 	public TokenService(int expirationInSeconds) {
 		this.expirationInSeconds = expirationInSeconds;
 	}
 
 	public TokenVO createToken(TokenVO tokenVO) {
-		if (tokenVO.getTokenType().equalsIgnoreCase("bearer"))
+		if (tokenVO.getTokenType() != null && tokenVO.getTokenType().equalsIgnoreCase("bearer"))
 			return createJWTToken(tokenVO);
 
-		if (tokenVO.getTokenType().equalsIgnoreCase("uuid"))
-			return createUuidToken(tokenVO);
-		return tokenVO;
+		return createUuidToken(tokenVO);
 	}
 
 	public TokenVO validateToken(TokenVO tokenVO) {
@@ -49,6 +48,35 @@ public class TokenService {
 		if (tokenVO.getTokenType().equalsIgnoreCase("uuid"))
 			return validateUuidToken(tokenVO);
 		return tokenVO;
+	}
+	
+	private String generateCacheKey(TokenVO tokenVO) {
+		String cacheKey = tokenVO.getEmail();
+		cacheKey += tokenVO.getPassword(); 
+		cacheKey += tokenVO.getGrantType(); 
+		cacheKey += tokenVO.getTokenType();
+		return cacheKey;
+	}
+	
+	public TokenVO checkCache(TokenVO tokenVO) {
+		String cacheKey = generateCacheKey(tokenVO);
+		if(validTokens.containsKey(cacheKey)) {
+			tokenVO = validTokens.get(cacheKey);
+			long tokenAgeInSeconds = Duration.between(tokenVO.getCreatedIn(), ZonedDateTime.now()).getSeconds();
+			if (tokenAgeInSeconds < expirationInSeconds) {
+				tokenVO.setStillValidForSeconds(expirationInSeconds - tokenAgeInSeconds);
+				return tokenVO;
+			}
+			if (tokenAgeInSeconds > expirationInSeconds) {
+				validTokens.remove(cacheKey);
+			}
+		}
+		return null;
+	}
+	
+	public void updateCache(TokenVO tokenVO) {
+		String cacheKey = generateCacheKey(tokenVO);
+		validTokens.put(cacheKey, tokenVO);
 	}
 
 	public TokenVO createUuidToken(TokenVO tokenVO) {
@@ -86,10 +114,10 @@ public class TokenService {
 		String token = Jwts.builder().setSubject(String.valueOf(tokenVO.getUserId()))
 				.setIssuer("digitus forum login microservice").setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
 				.setExpiration(Date.from(expiration.toInstant())).claim("provider", "provider")
-				.claim("email", tokenVO.getUserEmail()).claim("name", tokenVO.getUserName())
+				.claim("email", tokenVO.getEmail()).claim("name", tokenVO.getUserName())
 				.claim("id", tokenVO.getUserId()).signWith(signatureAlgorithm, signingKey).compact();
 		tokenVO.setToken(token);
-		tokenVO.setUserId(0);
+		tokenVO.setUserId(tokenVO.getUserId());
 		return tokenVO;
 	}
 
@@ -118,8 +146,8 @@ public class TokenService {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, M.INTERNAL_SERVER_ERROR);
 		}
 
-		tokenVO.setUserId(Integer.valueOf(jwtToken.getBody().getSubject()));
-		tokenVO.setUserEmail(jwtToken.getBody().get("email").toString());
+		tokenVO.setUserId(jwtToken.getBody().getSubject());
+		tokenVO.setEmail(jwtToken.getBody().get("email").toString());
 		return tokenVO;
 	}
 

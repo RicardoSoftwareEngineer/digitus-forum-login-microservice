@@ -1,5 +1,6 @@
 package com.digitusforum.login.util;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -10,11 +11,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.digitusforum.login.PerfilVO;
 import com.digitusforum.login.TokenVO;
 import com.google.gson.Gson;
 
 import i18.M;
 import request.MicroservicesURLs;
+import user.UserVO;
 
 public class RequestService {
 
@@ -22,12 +25,36 @@ public class RequestService {
 		if (!isUp(MicroservicesURLs.USER))
 			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, M.USER_MICROSERVICE_OFFLINE);
 	}
+	
+	private void checkPerfilMS() {
+		if (!isUp(MicroservicesURLs.PERFIL))
+			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, M.PERFIL_MICROSERVICE_OFFLINE);
+	}
 
+	public TokenVO getLastPerfilUsed(TokenVO tokenVO) {
+		checkPerfilMS();
+		PerfilVO perfilVO = new PerfilVO();
+		perfilVO.setUserId(tokenVO.getUserId());
+		String url = MicroservicesURLs.PERFIL_RETRIEVE_LAST_USED;
+		String jsonResponse = request(url, perfilVO);
+		perfilVO = new Gson().fromJson(jsonResponse, PerfilVO.class);
+		tokenVO.setLastPerfilUsed(perfilVO.getId());
+		tokenVO.setLastPerfilType(perfilVO.getType());
+		tokenVO.setLastPerfilName(perfilVO.getName());
+		return tokenVO;
+	}
+	
 	public TokenVO checkEmailAndPassword(TokenVO tokenVO) {
 		checkUserMS();
+		UserVO userVO = new UserVO();
+		userVO.setEmail(tokenVO.getEmail());
+		userVO.setPassword(tokenVO.getPassword());
 		String url = "http://localhost:8083/user/v1/retrieve/byEmailAndPassword";
-		String jsonResponse = request(url, tokenVO);
-		tokenVO = new Gson().fromJson(jsonResponse, TokenVO.class);
+		String jsonResponse = request(url, userVO);
+		userVO = new Gson().fromJson(jsonResponse, UserVO.class);
+		//tokenVO = new ModelMapper().map(userVO, TokenVO.class);
+		tokenVO.setUserId(userVO.getId());
+		//tokenVO.setUserName(userVO.getName());
 		return tokenVO;
 	}
 
