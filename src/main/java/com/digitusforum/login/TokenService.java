@@ -15,7 +15,9 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import i18.M;
+import com.digitusforum.login.util.EnvironmentService;
+import com.digitusforum.login.util.M;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -23,7 +25,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import util.EnvironmentService;
 
 public class TokenService {
 	private int expirationInSeconds;
@@ -49,18 +50,18 @@ public class TokenService {
 			return validateUuidToken(tokenVO);
 		return tokenVO;
 	}
-	
+
 	private String generateCacheKey(TokenVO tokenVO) {
 		String cacheKey = tokenVO.getEmail();
-		cacheKey += tokenVO.getPassword(); 
-		cacheKey += tokenVO.getGrantType(); 
+		cacheKey += tokenVO.getPassword();
+		cacheKey += tokenVO.getGrantType();
 		cacheKey += tokenVO.getTokenType();
 		return cacheKey;
 	}
-	
+
 	public TokenVO checkCache(TokenVO tokenVO) {
 		String cacheKey = generateCacheKey(tokenVO);
-		if(validTokens.containsKey(cacheKey)) {
+		if (validTokens.containsKey(cacheKey)) {
 			tokenVO = validTokens.get(cacheKey);
 			long tokenAgeInSeconds = Duration.between(tokenVO.getCreatedIn(), ZonedDateTime.now()).getSeconds();
 			if (tokenAgeInSeconds < expirationInSeconds) {
@@ -73,7 +74,7 @@ public class TokenService {
 		}
 		return null;
 	}
-	
+
 	public void updateCache(TokenVO tokenVO) {
 		String cacheKey = generateCacheKey(tokenVO);
 		validTokens.put(cacheKey, tokenVO);

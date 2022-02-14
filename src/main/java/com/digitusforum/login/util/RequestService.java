@@ -1,6 +1,5 @@
 package com.digitusforum.login.util;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -13,11 +12,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.digitusforum.login.PerfilVO;
 import com.digitusforum.login.TokenVO;
+import com.digitusforum.login.UserVO;
 import com.google.gson.Gson;
 
-import i18.M;
-import request.MicroservicesURLs;
-import user.UserVO;
 
 public class RequestService {
 
@@ -25,7 +22,7 @@ public class RequestService {
 		if (!isUp(MicroservicesURLs.USER))
 			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, M.USER_MICROSERVICE_OFFLINE);
 	}
-	
+
 	private void checkPerfilMS() {
 		if (!isUp(MicroservicesURLs.PERFIL))
 			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, M.PERFIL_MICROSERVICE_OFFLINE);
@@ -43,7 +40,7 @@ public class RequestService {
 		tokenVO.setLastPerfilName(perfilVO.getName());
 		return tokenVO;
 	}
-	
+
 	public TokenVO checkEmailAndPassword(TokenVO tokenVO) {
 		checkUserMS();
 		UserVO userVO = new UserVO();
@@ -52,9 +49,9 @@ public class RequestService {
 		String url = "http://localhost:8083/user/v1/retrieve/byEmailAndPassword";
 		String jsonResponse = request(url, userVO);
 		userVO = new Gson().fromJson(jsonResponse, UserVO.class);
-		//tokenVO = new ModelMapper().map(userVO, TokenVO.class);
+		// tokenVO = new ModelMapper().map(userVO, TokenVO.class);
 		tokenVO.setUserId(userVO.getId());
-		//tokenVO.setUserName(userVO.getName());
+		// tokenVO.setUserName(userVO.getName());
 		return tokenVO;
 	}
 
