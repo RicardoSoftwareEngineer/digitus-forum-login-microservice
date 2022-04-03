@@ -6,6 +6,7 @@ target/
 
 .mvn
 logs*
+*.log
 
 ### STS ###
 .apt_generated
