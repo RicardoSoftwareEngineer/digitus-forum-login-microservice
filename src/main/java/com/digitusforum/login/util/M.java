@@ -24,7 +24,7 @@ public class M {
     
     public static String PERFIL_MICROSERVICE_OFFLINE = "perfil.microservice.offline";
     
-    public static String TRAIL_AND_COURSE_MICROSERVICE_OFFLINE = "trail_and_course.microservice.offline";
+    public static String COURSE_MICROSERVICE_OFFLINE = "course.microservice.offline";
     
     public static String INTERNAL_SERVER_ERROR = "internal.server.error";
 }

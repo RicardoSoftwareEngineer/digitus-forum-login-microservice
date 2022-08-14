@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.digitusforum.login.util.EnvironmentService;
 import com.digitusforum.login.util.M;
+import com.google.gson.Gson;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -27,13 +28,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
 public class TokenService {
-	private int expirationInSeconds;
-	private Map<String, TokenVO> uuidTokens = new HashMap<>();
-	private Map<String, TokenVO> validTokens = new HashMap<>();
-
-	public TokenService(int expirationInSeconds) {
-		this.expirationInSeconds = expirationInSeconds;
-	}
 
 	public TokenVO createToken(TokenVO tokenVO) {
 		if (tokenVO.getTokenType() != null && tokenVO.getTokenType().equalsIgnoreCase("bearer"))
@@ -42,64 +36,59 @@ public class TokenService {
 		return createUuidToken(tokenVO);
 	}
 
-	public TokenVO validateToken(TokenVO tokenVO) {
-		if (tokenVO.getTokenType().equalsIgnoreCase("bearer"))
-			return validateBearerToken(tokenVO);
-
-		if (tokenVO.getTokenType().equalsIgnoreCase("uuid"))
-			return validateUuidToken(tokenVO);
-		return tokenVO;
-	}
-
-	private String generateCacheKey(TokenVO tokenVO) {
-		String cacheKey = tokenVO.getEmail();
-		cacheKey += tokenVO.getPassword();
-		cacheKey += tokenVO.getGrantType();
-		cacheKey += tokenVO.getTokenType();
-		return cacheKey;
-	}
-
-	public TokenVO checkCache(TokenVO tokenVO) {
-		String cacheKey = generateCacheKey(tokenVO);
-		if (validTokens.containsKey(cacheKey)) {
-			tokenVO = validTokens.get(cacheKey);
-			long tokenAgeInSeconds = Duration.between(tokenVO.getCreatedIn(), ZonedDateTime.now()).getSeconds();
-			if (tokenAgeInSeconds < expirationInSeconds) {
-				tokenVO.setStillValidForSeconds(expirationInSeconds - tokenAgeInSeconds);
-				return tokenVO;
-			}
-			if (tokenAgeInSeconds > expirationInSeconds) {
-				validTokens.remove(cacheKey);
-			}
-		}
-		return null;
-	}
-
-	public void updateCache(TokenVO tokenVO) {
-		String cacheKey = generateCacheKey(tokenVO);
-		validTokens.put(cacheKey, tokenVO);
-	}
-
 	public TokenVO createUuidToken(TokenVO tokenVO) {
-		tokenVO.setCreatedIn(ZonedDateTime.now());
+		tokenVO.setCreatedIn(ZonedDateTime.now()); 
 		tokenVO.setToken(UUID.randomUUID().toString());
-		uuidTokens.put(tokenVO.getToken(), tokenVO);
 		return tokenVO;
 	}
 
-	public TokenVO validateUuidToken(TokenVO tokenVO) {
-		tokenVO = uuidTokens.get(tokenVO.getToken());
-		if (tokenVO == null)
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, M.LOGIN_INVALID_TOKEN);
+	/*
+	 * public TokenVO validateToken(TokenVO tokenVO) { if
+	 * (tokenVO.getTokenType().equalsIgnoreCase("bearer")) return
+	 * validateBearerToken(tokenVO);
+	 * 
+	 * if (tokenVO.getTokenType().equalsIgnoreCase("uuid")) return
+	 * validateUuidToken(tokenVO); return tokenVO; }
+	 */
 
-		long tokenAgeInSeconds = Duration.between(tokenVO.getCreatedIn(), ZonedDateTime.now()).getSeconds();
-		if (tokenAgeInSeconds > expirationInSeconds)
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, M.LOGIN_EXPIRED_TOKEN);
+	/*
+	 * private String generateCacheKey(TokenVO tokenVO) { String cacheKey =
+	 * tokenVO.getEmail(); cacheKey += tokenVO.getPassword(); cacheKey +=
+	 * tokenVO.getGrantType(); cacheKey += tokenVO.getTokenType(); return cacheKey;
+	 * }
+	 */
 
-		tokenVO.setStillValidForSeconds(expirationInSeconds - tokenAgeInSeconds);
-		return tokenVO;
-	}
+	/*
+	 * public TokenVO checkCache(TokenVO tokenVO) { String cacheKey =
+	 * generateCacheKey(tokenVO); if (validTokens.containsKey(cacheKey)) { tokenVO =
+	 * validTokens.get(cacheKey); long tokenAgeInSeconds =
+	 * Duration.between(tokenVO.getCreatedIn(), ZonedDateTime.now()).getSeconds();
+	 * if (tokenAgeInSeconds < expirationInSeconds) {
+	 * tokenVO.setStillValidForSeconds(expirationInSeconds - tokenAgeInSeconds);
+	 * return tokenVO; } if (tokenAgeInSeconds > expirationInSeconds) {
+	 * validTokens.remove(cacheKey); } } return null; }
+	 */
 
+	/*
+	 * public void updateCache(TokenVO tokenVO) { String cacheKey =
+	 * generateCacheKey(tokenVO); validTokens.put(cacheKey, tokenVO); }
+	 */
+
+	/*
+	 * public TokenVO validateUuidToken(TokenVO tokenVO) { tokenVO =
+	 * uuidTokens.get(tokenVO.getToken()); if (tokenVO == null) throw new
+	 * ResponseStatusException(HttpStatus.FORBIDDEN, M.LOGIN_INVALID_TOKEN);
+	 * 
+	 * long tokenAgeInSeconds = Duration.between(tokenVO.getCreatedIn(),
+	 * ZonedDateTime.now()).getSeconds(); if (tokenAgeInSeconds >
+	 * expirationInSeconds) throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+	 * M.LOGIN_EXPIRED_TOKEN);
+	 * 
+	 * tokenVO.setStillValidForSeconds(expirationInSeconds - tokenAgeInSeconds);
+	 * return tokenVO; }
+	 */
+
+	int expirationInSeconds = 15;
 	public TokenVO createJWTToken(TokenVO tokenVO) {
 		// The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
