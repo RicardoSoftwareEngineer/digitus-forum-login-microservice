@@ -1,44 +1,58 @@
 
+# Maternity platform for new java programmers
+
+free junior training
+- no prior experience required
+- teach spring programming, versioning, sql and job searching
+- a lot of practice
+- direct message follow-up
+- launch in 2022
+- english version launch in 2023
+
+mid level training R$ 400.00
+- spring stack (rest, jpa, crypto...)
+- pure SQL
+- safety
+- database performance tunning
+- cache performance tunning
+- financial performance tunning
+- interpersonal skills
+- paid peer coach follow-up
+- launch in 2023
+- english version in 2023
+
+platform
+- large-scale labor production (junior and mid level java)
+- made with spring boot
+- built on microservices architecture
+- cached UUID token validation (better than JWT)
+- hosted on aws
+- versioned on github
+
+accessible on www.eusouprogramadorjunior.com
+
 # Login
 
-Login is the microservice responsible for create and validate JWT tokens
+The login microservice is built to handle token creation and validation 
 
+Its intended to be used internaly by others microservices, not to be exposed on internet, thats why the requests are not authenticated
 
 ## Made with
 
 - java 11
-- maven
 - spring boot 2.5
-- junit 5
-- mockito 3.9
+- maven
 - sprint tool suite 4
-
-## Tests
-
-- mocked test with dependency injection
-
-## Installation
-
-Import on your preferred IDE as a maven project and run it like any other spring boot project
-
-## Postman reqs
-
-To make your life easier I put all requests available for download directly in your postman [here](https://www.getpostman.com/collections/3f7d6ea128d4b85c9943)
-
-## Dependency
-
- - [Alexandria](https://github.com/RicardoCampinas/digitus-forum-alexandria)
-
 
 ## Microservices ecosystem
 
-Login is part of 4 microservices intended to be [my linkedin](https://www.linkedin.com/in/ricardojava/) portfolio
+Login is one of the following plataform microservices
+ - [Course](https://github.com/RicardoCampinas/digitus-forum-course-microservice)
  - [Firewall](https://github.com/RicardoCampinas/digitus-forum-firewall-microservice)
  - [Internationalization](https://github.com/RicardoCampinas/digitus-forum-internationalization-microservice)
  - [Login](https://github.com/RicardoCampinas/digitus-forum-login-microservice)
+ - [Perfil](https://github.com/RicardoCampinas/digitus-forum-perfil-microservice)
  - [User](https://github.com/RicardoCampinas/digitus-forum-user-microservice)
  
 
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
-
-
