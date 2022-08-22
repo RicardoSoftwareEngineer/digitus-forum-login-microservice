@@ -46,11 +46,14 @@ public class RequestService {
 		UserVO userVO = new UserVO();
 		userVO.setEmail(tokenVO.getEmail());
 		userVO.setPassword(tokenVO.getPassword());
+		//TODO this can´t be hard coded
 		String url = "http://localhost:8083/user/v1/retrieve/byEmailAndPassword";
 		String jsonResponse = request(url, userVO);
 		userVO = new Gson().fromJson(jsonResponse, UserVO.class);
 		// tokenVO = new ModelMapper().map(userVO, TokenVO.class);
 		tokenVO.setUserId(userVO.getId());
+		tokenVO.setEmail(userVO.getEmail());
+		tokenVO.setUserType(userVO.getType());
 		// tokenVO.setUserName(userVO.getName());
 		return tokenVO;
 	}

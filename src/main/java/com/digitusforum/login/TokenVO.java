@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 public class TokenVO {
 	private String userId;
 	private String userName;
+	private String userType;
 	private String email;
 	private String password;
 	private String tokenType;
@@ -15,6 +16,14 @@ public class TokenVO {
 	private String lastPerfilName;
 	private long stillValidForSeconds;
 	private ZonedDateTime createdIn;
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
+	}
 
 	public String getUserId() {
 		return userId;
