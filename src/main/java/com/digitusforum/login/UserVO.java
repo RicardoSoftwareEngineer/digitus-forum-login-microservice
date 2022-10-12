@@ -5,6 +5,7 @@ public class UserVO {
 	private String name;
 	private String email;
 	private String type;
+	private String userType;
 	private String password;
 	private String token;
 	private boolean deleted;
@@ -22,6 +23,14 @@ public class UserVO {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 	public String getType() {

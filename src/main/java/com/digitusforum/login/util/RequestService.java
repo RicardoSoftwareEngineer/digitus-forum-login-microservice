@@ -53,7 +53,7 @@ public class RequestService {
 		// tokenVO = new ModelMapper().map(userVO, TokenVO.class);
 		tokenVO.setUserId(userVO.getId());
 		tokenVO.setEmail(userVO.getEmail());
-		tokenVO.setUserType(userVO.getType());
+		tokenVO.setUserType(userVO.getUserType());
 		// tokenVO.setUserName(userVO.getName());
 		return tokenVO;
 	}

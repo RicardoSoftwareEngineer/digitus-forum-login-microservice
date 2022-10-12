@@ -33,6 +33,8 @@ accessible on www.eusouprogramadorjunior.com
 
 # Login
 
+The JWT token was replaced by a better system based on hashmap and uuid developed by me
+
 The login microservice is built to handle token creation and validation 
 
 Its intended to be used internaly by others microservices, not to be exposed on internet, thats why the requests are not authenticated
