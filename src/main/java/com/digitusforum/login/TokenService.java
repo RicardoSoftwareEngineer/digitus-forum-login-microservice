@@ -31,7 +31,7 @@ public class TokenService {
 
 	public TokenVO createToken(TokenVO tokenVO) {
 		if (tokenVO.getTokenType() != null && tokenVO.getTokenType().equalsIgnoreCase("bearer"))
-			return createJWTToken(tokenVO);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, M.LOGIN_INVALID_TOKEN);
 
 		return createUuidToken(tokenVO);
 	}
