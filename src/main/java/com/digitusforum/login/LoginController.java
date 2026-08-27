@@ -26,7 +26,7 @@ public class LoginController {
 		tokenVO = requestService.checkEmailAndPassword(tokenVO);
 		tokenVO = tokenService.createToken(tokenVO);
 		// tokenVO = requestService.getLastPerfilUsed(tokenVO);
-		//tokenVO.setPassword(null); this is done in FirewallLoginService.getFromCache
+		tokenVO.setPassword(null);
 		return tokenVO;
 	}
 
