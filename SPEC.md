@@ -33,7 +33,7 @@ MS **interno** (porta `8082`). Emite token UUID **depois** que o user MS autenti
 Nenhum persistido. TokenVO de passagem: `token`, `email`, `createdIn`, `tokenType`, `userId` (do user MS). Sem senha.
 
 ## CONTRATO
-- CONTRATO-CREATE `/login/v1/createToken` — entra `email` e/ou `userId` **sem senha**; sai UUID **cru** (sem `Bearer`). Quem prefixa é o cliente/borda. Chamado pela borda **depois** de CONTRATO-EV-OK no user MS.
+- CONTRATO-CREATE `/login/v1/createToken` — entra `email` e/ou `userId` **sem senha**; sai UUID **cru** (sem `Bearer`). Quem prefixa é o cliente/borda. Chamado pela borda **depois** de CONTRATO-EV-OK no user MS. código alinhado (sem senha; produto emite UUID no cache da borda).
 - CONTRATO-HEALTH `/login/v1/healthCheck` `/healthCheck` `/test`
 
 Não há `/login/v1/validateToken` usado pela borda atual (firewall valida o próprio cache).
