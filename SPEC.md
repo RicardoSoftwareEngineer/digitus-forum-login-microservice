@@ -31,7 +31,7 @@ MS **interno** (porta `8082`). Emite token UUID. Não é sessão: o cache de ses
 Nenhum persistido. TokenVO de passagem: `token`, `email`, `createdIn`, `tokenType`, `userId` (se vier do user MS). Senha só no request, nunca no response.
 
 ## END
-- END-CREATE `/login/v1/createToken` — entra email+senha; sai UUID
+- END-CREATE `/login/v1/createToken` — entra email+senha; sai UUID **cru** (sem `Bearer`). Quem prefixa é o cliente/borda.
 - END-HEALTH `/login/v1/healthCheck` `/healthCheck` `/test`
 
 Não há `/login/v1/validateToken` usado pela borda atual (firewall valida o próprio cache).
