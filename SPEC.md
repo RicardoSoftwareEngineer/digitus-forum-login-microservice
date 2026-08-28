@@ -1,26 +1,26 @@
 <!-- para IA. não é README de humano. -->
 # SPEC — login
 
-status: v0
+status: v0.2
 sha: `0cec5b6`
 data: 2026-08-28
 
 ## Como usar
 - Este arquivo é a fonte. Código ≠ spec → **bug de código**. Spec errada → Ricardo muda **este** arquivo, depois o código.
-- IDs estáveis (`INV-` `DADOS-` `END-` `NÃO-` `GAP-`). Não apague ID; marque `revogado`.
-- "achei bug" → cita INV/END. Se não existir, é GAP, não patch.
+- IDs estáveis (`REGRA-` `DADOS-` `CONTRATO-` `NÃO-` `GAP-`). Não apague ID; marque `revogado`.
+- "achei bug" → cita REGRA/CONTRATO. Se não existir, é GAP, não patch.
 - "não estamos salvando X" → olha DADOS. Campo ausente = não é bug.
-- "cadastrar campo X" → conflita se quebra INV/NÃO; senão vira GAP e só então código.
+- "cadastrar campo X" → conflita se quebra REGRA/NÃO; senão vira GAP e só então código.
 - GAP = pergunta aberta. Não trate GAP como regra.
 
 ## Papel
-MS **interno** (porta `8082`). Emite token UUID. Não é sessão: o cache de sessão está no **firewall**. Sem auth HTTP (desenho: não expor na internet). Ver firewall `INV-EDGE-1`.
+MS **interno** (porta `8082`). Emite token UUID. Não é sessão: o cache de sessão está no **firewall**. Sem auth HTTP (desenho: não expor na internet). Ver firewall `REGRA-EDGE-1`.
 
-## INV
-- INV-TOKEN-1: token emitido é UUID. `tokenType=bearer` **não** é contrato (JWT é legado).
-- INV-TOKEN-2: resposta de create **não inclui senha**.
-- INV-TOKEN-3: login não persiste token em DB. Sem tabela de sessão.
-- INV-CREDS-1: valida email+senha no MS user (`/user/v1/retrieve/byEmailAndPassword`).
+## REGRA
+- REGRA-TOKEN-1: token emitido é UUID. `tokenType=bearer` **não** é contrato (JWT é legado).
+- REGRA-TOKEN-2: resposta de create **não inclui senha**.
+- REGRA-TOKEN-3: login não persiste token em DB. Sem tabela de sessão.
+- REGRA-CREDS-1: valida email+senha no MS user (`/user/v1/retrieve/byEmailAndPassword`).
 
 ## NÃO
 - NÃO-JWT: não emite JWT. (código ainda tem ramo bearer — GAP / PR #10)
@@ -30,9 +30,9 @@ MS **interno** (porta `8082`). Emite token UUID. Não é sessão: o cache de ses
 ## DADOS
 Nenhum persistido. TokenVO de passagem: `token`, `email`, `createdIn`, `tokenType`, `userId` (se vier do user MS). Senha só no request, nunca no response.
 
-## END
-- END-CREATE `/login/v1/createToken` — entra email+senha; sai UUID **cru** (sem `Bearer`). Quem prefixa é o cliente/borda.
-- END-HEALTH `/login/v1/healthCheck` `/healthCheck` `/test`
+## CONTRATO
+- CONTRATO-CREATE `/login/v1/createToken` — entra email+senha; sai UUID **cru** (sem `Bearer`). Quem prefixa é o cliente/borda.
+- CONTRATO-HEALTH `/login/v1/healthCheck` `/healthCheck` `/test`
 
 Não há `/login/v1/validateToken` usado pela borda atual (firewall valida o próprio cache).
 
